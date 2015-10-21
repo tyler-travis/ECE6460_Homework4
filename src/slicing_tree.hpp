@@ -64,6 +64,10 @@ class slicing_tree
 
         // Find the cost of the slicing tree
         double cost(std::string);
+
+        // Return a string of all the module names
+        // The modules all have names of 1 character
+        std::string get_module_names();
 };
 
 #endif

@@ -315,3 +315,13 @@ dimension_list slicing_tree::delete_maximums(dimension_list list)
     }
     return list;
 }
+
+std::string slicing_tree::get_module_names()
+{
+    std::string ret;
+    for(unsigned int i = 0; i < module_list.size(); ++i)
+    {
+        ret.push_back(module_list[i].get_name());
+    }
+    return ret;
+}
