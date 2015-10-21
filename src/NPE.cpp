@@ -20,6 +20,12 @@ NPE::NPE(std::string fileName)
     for(unsigned int i = 1; i < temp.size(); ++i)
     {
         expression.push_back(temp[i]);
-        expression.push_back("V");
+        expression.push_back('V');
     }
+}
+
+
+const std::string NPE::get_NPE(void)
+{
+    return expression;
 }

@@ -41,6 +41,7 @@ class slicing_tree
         void populate_dimension_lists();
         dimension_list populate_dimension_lists(node*);
         dimension_list delete_maximums(dimension_list);
+        void delete_tree(node*);
 
     public:
         slicing_tree();
@@ -68,6 +69,9 @@ class slicing_tree
         // Return a string of all the module names
         // The modules all have names of 1 character
         std::string get_module_names();
+
+        // Delete the tree
+        void delete_tree();
 };
 
 #endif

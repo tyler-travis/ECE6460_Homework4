@@ -321,7 +321,25 @@ std::string slicing_tree::get_module_names()
     std::string ret;
     for(unsigned int i = 0; i < module_list.size(); ++i)
     {
-        ret.push_back(module_list[i].get_name());
+        ret.push_back(module_list[i].get_name()[0]);
     }
     return ret;
+}
+
+void slicing_tree::delete_tree(node* current_node)
+{
+    if(current_node->get_name() != "V" || current_node->get_name() != "H")
+    {
+        delete current_node;
+        return;
+    }
+    delete_tree(current_node->get_right());
+    delete_tree(current_node->get_left());
+    delete current_node;
+}
+
+void slicing_tree::delete_tree()
+{
+    delete_tree(root);
+    root = 0;
 }
