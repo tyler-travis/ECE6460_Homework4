@@ -1,9 +1,13 @@
-
+// File: NPE.hpp
+// Author: Tyler Travis
+// A#: A01519795
+// Homework 4
 
 #ifndef NPE_HPP
 #define NPE_HPP
 
 #include <string>
+#include <random>
 #include "slicing_tree.hpp"
 
 class NPE
@@ -15,16 +19,37 @@ private:
     // The slicing_tree corresponding to the NPE
     slicing_tree tree;
 
+    // Random number generator
+    std::random_device rd;
+
+    // Verifies the expression is a valid normalized polish expression
+    void verify_NPE();
+    
 public:
     // Default constructor
     NPE();
 
     // Takes a filename to open the file and populate the module list
     NPE(std::string);
+   
+    // Takes a filename and an expression to open the file and populate the module list
+    NPE(std::string, std::string);
 
     // Getter for the NPE
     const std::string get_NPE(void);
 
+    // Setter for the NPE
+    void set_NPE(std::string);
+
+    // M1: Swap two adjacent operands
+    std::string M1();
+
+    // M2: Complement some chain of nonzero length
+    std::string M2();
+
+    // M3: Swap two adjacent operand and operator
+    // (Need to check if still normailized after swap)
+    std::string M3();
 
 };
 

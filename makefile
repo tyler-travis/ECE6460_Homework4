@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -Wall -c -g
+CFLAGS = -Wall -c -g --std=c++11
 LDFLAGS = -lm
 SOURCES = src/main.cpp src/node.cpp src/operator_node.cpp src/operand_node.cpp src/module.cpp src/slicing_tree.cpp src/NPE.cpp
 OBJECTS = $(SOURCES:.cpp=.o)

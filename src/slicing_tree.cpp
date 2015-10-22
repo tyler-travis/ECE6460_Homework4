@@ -80,6 +80,7 @@ void slicing_tree::import_module_list(std::string input_file)
         fin >> temp_aspect_ratio;
         module_list.push_back(module(temp_name, temp_area, temp_aspect_ratio));
     }
+    fin.close();
 }
 
 void slicing_tree::display_module_list()
