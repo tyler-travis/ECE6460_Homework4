@@ -22,9 +22,9 @@ private:
     // Random number generator
     std::random_device rd;
 
-    // Verifies the expression is a valid normalized polish expression
-    void verify_NPE();
-    
+    // Verifies that an expression will be vaild after a move
+    bool verify(unsigned int, unsigned int);
+
 public:
     // Default constructor
     NPE();
@@ -50,6 +50,9 @@ public:
     // M3: Swap two adjacent operand and operator
     // (Need to check if still normailized after swap)
     std::string M3();
+
+    // Print the corrisponding tree
+    void print_tree();
 
 };
 

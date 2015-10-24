@@ -26,106 +26,299 @@ NPE::NPE(std::string fileName)
     }
 }
 
+NPE::NPE(std::string fileName, std::string _expression)
+{
+    expression = expression;
+    tree.import_module_list(fileName);
+}
+
 
 const std::string NPE::get_NPE(void)
 {
     return expression;
 }
 
+void NPE::set_NPE(std::string _expression)
+{
+    tree.delete_tree();
+    expression = _expression;
+    tree.create_tree(expression);
+}
+
+// M1: Swap two adjacent operands
 std::string NPE::M1()
 {
-    bool valid_swap = false;
-    unsigned int rand_index;
-    unsigned int swap_index;
-    std::string return_expression = expression;
+    // variable to contain the starting index which is random
+    unsigned int random_index;
 
-    while(!valid_swap)
+    // first index to swap
+    unsigned int first_index;
+
+    // second index to swap
+    unsigned int second_index;
+
+    // Needed to check if our index is reaching the end of the string
+    bool at_end_of_string;
+    
+    // End expression for the M1 move
+    std::string final_expression = expression;
+
+    do
     {
-        rand_index = rd() % expression.size();
-        while(expression[rand_index] == 'V' || expression[rand_index] == 'V')
+        at_end_of_string = false;
+
+        // random_index is between 0 and expression.size()
+        random_index = rd() % expression.size();
+
+        // random_index lands inside a chain
+        if(expression[random_index] == 'V' || expression[random_index] == 'H')
         {
-            rand_index++;
-            if(rand_index >= expression.size())
+            // find the first index outside of the chain
+            first_index = expression.find_first_not_of("VH", random_index);
+            
+            // find the second index outside of the chain
+            second_index = expression.find_last_not_of("VH", random_index);
+
+            // Repeat this if the first index is at the end of the string
+            if(first_index >= expression.size())
             {
-                rand_index = 0;
+                at_end_of_string = true;
             }
         }
-        swap_index = rand_index + 1;
-        while(expression[swap_index] == 'V' || expression[swap_index] == 'H')
+
+        // random_index lands outside a chain
+        else
         {
-            swap_index++;
-            if(swap_index >= expression.size())
+            first_index = random_index;
+            
+            // Is the character to the right of the random index an operator?
+            if(expression[random_index + 1] == 'V' || expression[random_index + 1] == 'H')
             {
-                valid_swap = false;
+                // Is the character to the left of the random index an operator?
+                if(expression[random_index - 1] == 'V' || expression[random_index - 1] == 'H')
+                {
+                    // Find the next operand after the chain to the right
+                    second_index = expression.find_first_not_of("VH", random_index + 1);
+                    
+                    // Repeat this if the second index is at the end of the string
+                    if(second_index >= expression.size())
+                    {
+                        at_end_of_string = true;
+                    }
+                }
+                // The character to the left of the random index is an operand
+                else
+                {
+                    second_index = first_index - 1;
+                }
             }
+            // The character to the left of the random index is an operand
             else
             {
-                valid_swap = true;
+                second_index = first_index + 1;
             }
         }
-    }
-    std::cout << "rand: " << rand_index << std::endl;
-    std::cout << "swap: " << swap_index << std::endl;
-    std::swap(return_expression[rand_index], return_expression[swap_index]);
-    return return_expression;
+    } while(at_end_of_string);
+    
+    // Swap the indices
+    std::swap(final_expression[first_index], final_expression[second_index]);
+    
+    return final_expression;
 }
 
 // M2: Complement some chain of nonzero length
 std::string NPE::M2()
 {
-    std::string return_expression = expression;
-    unsigned int starting_index = rd() % expression.size();
-    // If in the middle of a chain, find the beginning
-    while(expression[starting_index] == 'V' || expression[starting_index] == 'H')
-    {
-        starting_index--;
-    }
-    starting_index++;
+    // random_index to find starting point
+    unsigned int random_index = rd() % expression.size();
 
-    // Take the complement of this chain
-    while(expression[starting_index] == 'V' || expression[starting_index] == 'H')
-    {
-        if(expression[starting_index] == 'V')
-        {
-            return_expression[starting_index] = 'H';
-        }
-        else if(expression[starting_index] == 'H')
-        {
-            return_expression[starting_index] = 'V';
-        }
-        if(starting_index > expression.size())
-        {
-            break;
-        }
-        starting_index++;
-    }
-    return return_expression;
+    // place holder for begining of a chain
+    unsigned int begin_index;
 
+    std::string final_expression = expression;
+    
+    // random_index is inside a chain
+    if(expression[random_index] == 'V' || expression[random_index] == 'H')
+    {
+        // This will find the first operator of a chain
+        begin_index = expression.find_last_not_of("HV", random_index) + 1;
+    }
+
+    // random_index is outside a chain
+    else
+    {
+        // This will find the first operator of a chain
+        begin_index = expression.find_first_of("HV", random_index);
+    }
+    
+    // Iterate through the entire chain flipping each operator
+    for(unsigned int i = begin_index; i < expression.size() && (expression[i] == 'V' || expression[i] == 'H'); ++i)
+    {
+        if(final_expression[i] == 'H')
+        {
+            final_expression[i] = 'V';
+        }
+        else
+        {
+            final_expression[i] = 'H';
+        }
+    }
+    return final_expression;
 }
 
 // M3: Swap two adjacent operand and operator
 // (Need to check if still normailized after swap)
-// TODO: What to do if end of string?
 std::string NPE::M3()
 {
-    std::string return_expression = expression;
-    unsigned int rand_index = rd() % expression.size();
-    if(expression[rand_index] != 'V' && expression[rand_index] != 'H')
+    // random_index is between 0 and expression.size()
+    unsigned int random_index;
+
+    // Check if we are at the end of the string
+    bool at_end_of_string;
+
+    // Indices to swap
+    unsigned int first_index, second_index;
+
+    // Direction to swap (0 goes to right, 1 goes to left)
+    unsigned int direction = rd() % 2;
+
+    // Count to finally give up if no valid swaps are found
+    unsigned int count = 0;
+
+    // Final expression to return
+    std::string final_expression = expression;
+    do
     {
-        while(expression[rand_index + 1] != 'V' && expression[rand_index + 1] != 'H')
+        // check to see if we should give up
+        count++;
+
+        if(count > 100)
         {
-            rand_index++;
+            return expression;
         }
-        std::swap(return_expression[rand_index], return_expression[rand_index + 1]);
-    }
-    else if(expression[rand_index] == 'V' || expression[rand_index] == 'H')
-    {
-        while(expression[rand_index + 1] == 'V' || expression[rand_index + 1] == 'H')
+
+        at_end_of_string = false;
+
+        // Get a random index
+        random_index = rd() % expression.size();
+        
+        // random_index is inside a chain
+        if(expression[random_index] == 'V' || expression[random_index] == 'H')
         {
-            rand_index++;
+            // go to right to find end of chain
+            if(direction == 0)
+            {
+                // This will find the last operator of a chain
+                first_index = expression.find_first_not_of("HV", random_index) - 1;
+                
+                // Skip all of at end of string
+                if(first_index >= expression.size())
+                {
+                    at_end_of_string = true;
+                }
+                // The next index should be an operand
+                else
+                {
+                    second_index = first_index + 1;
+                }
+            }
+            // got to left to find end of chain
+            else
+            {
+                // This will find the first operator of a chain
+                first_index = expression.find_last_not_of("HV", random_index) + 1;
+
+                // The previous index should be an operand
+                second_index = first_index - 1;
+            }
         }
-        std::swap(return_expression[rand_index], return_expression[rand_index + 1]);
-    }
-    return return_expression;
+        // random_index is outside a chain
+        else
+        {
+            // go to the right to find a beginning of a chain
+            if(direction == 0)
+            {
+                // This will be the first operator of a chain
+                first_index = expression.find_first_of("HV", random_index);
+
+                // This previous index should be an operand
+                second_index = first_index - 1;
+            }
+            // go to the left to find a ending of a chain
+            else
+            {
+                // This will find the end of a chain
+                first_index = expression.find_last_of("HV", random_index);
+                
+                // Skip all of at end of string
+                if(first_index >= expression.size())
+                {
+                    at_end_of_string = true;
+                }
+                // The next index should be an operand
+                else
+                {
+                    second_index = first_index + 1;
+                }
+            }
+        }
+
+    } while(!verify(first_index, second_index) || at_end_of_string );
+
+    std::swap(final_expression[first_index], final_expression[second_index]);
+
+    return final_expression;
 }
 
+bool NPE::verify(unsigned int first, unsigned int second)
+{
+    // initial check
+    if(first > expression.size())
+    {
+        return false;
+    }
+
+    // Variable to hold the number of operands
+    unsigned int operand_count = 0;
+    
+    // Variable to hold the number of operators
+    unsigned int operator_count = 0;
+
+    // String to test the swap
+    std::string test = expression;
+
+    // Swap the first and second indices
+    std::swap(test[first], test[second]);
+
+    // Move through the string to make sure that the changes
+    // still produce an NPE
+    for(unsigned int i = 0; i < test.size(); ++i)
+    {
+        // Checks for repeated operators
+        if(i + 1 < test.size() && (test[i] == test[i + 1]))
+        {
+            return false;
+        }
+
+        // Checks if the balloting condition is satisfied
+        if(test[i] == 'V' || test[i] == 'H')
+        {
+            operator_count++;
+        }
+        else
+        {
+            operand_count++;
+        }
+        
+        if(operator_count >= operand_count)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+void NPE::print_tree()
+{
+    tree.display_tree();
+}

@@ -329,6 +329,10 @@ std::string slicing_tree::get_module_names()
 
 void slicing_tree::delete_tree(node* current_node)
 {
+    if(current_node == 0)
+    {
+        return;
+    }
     if(current_node->get_name() != "V" || current_node->get_name() != "H")
     {
         delete current_node;
@@ -342,5 +346,5 @@ void slicing_tree::delete_tree(node* current_node)
 void slicing_tree::delete_tree()
 {
     delete_tree(root);
-    root = 0;
+    root = new node();
 }
