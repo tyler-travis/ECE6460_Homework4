@@ -170,6 +170,11 @@ void slicing_tree::display_tree_dimensions(node* current_node)
     std::cout << std::endl << "------------------------------------------------------------------------------------------------" << std::endl;
 }
 
+double slicing_tree::cost()
+{
+    return cost(NPE);
+}
+
 double slicing_tree::cost(std::string _NPE)
 {
     // Create the tree corrisponding to the NPE

@@ -54,6 +54,12 @@ public:
     // Print the corrisponding tree
     void print_tree();
 
+    // Get the cost of the current NPE
+    double cost();
+
+    // Get the number of operands for the expression
+    int get_number_of_operands();
+
 };
 
 #endif

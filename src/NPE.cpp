@@ -24,12 +24,14 @@ NPE::NPE(std::string fileName)
         expression.push_back(temp[i]);
         expression.push_back('V');
     }
+    tree.create_tree(expression);
 }
 
 NPE::NPE(std::string fileName, std::string _expression)
 {
-    expression = expression;
+    expression = _expression;
     tree.import_module_list(fileName);
+    tree.create_tree(expression);
 }
 
 
@@ -321,4 +323,22 @@ bool NPE::verify(unsigned int first, unsigned int second)
 void NPE::print_tree()
 {
     tree.display_tree();
+}
+
+double NPE::cost()
+{
+    return tree.cost();
+}
+
+int NPE::get_number_of_operands()
+{
+    int total = 0;
+    for(unsigned int i = 0; i < expression.size(); ++i)
+    {
+        if(expression[i] != 'V' && expression[i] != 'H')
+        {
+            total++;
+        }
+    }
+    return total;
 }
