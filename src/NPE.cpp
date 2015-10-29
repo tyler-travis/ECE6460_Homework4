@@ -11,26 +11,43 @@ NPE::NPE()
 
 NPE::NPE(std::string fileName)
 {
+    // Import the module list for the tree
     tree.import_module_list(fileName);
+
+    // Get the module names from the tree
     std::string temp = tree.get_module_names();
 
+    // If the expression isn't empty, clear it
     if(!expression.empty())
     {
         expression.clear();
     }
+
+    // Push on the first element
     expression.push_back(temp[0]);
+
+    // Alternate operand and operator to get a structure like:
+    // 12V34V5V6V...
     for(unsigned int i = 1; i < temp.size(); ++i)
     {
         expression.push_back(temp[i]);
         expression.push_back('V');
     }
+    
+    // Create a tree from that expression
     tree.create_tree(expression);
 }
 
+// Constructor for a module list and expression
 NPE::NPE(std::string fileName, std::string _expression)
 {
+    // Set the expression equal to the new expression
     expression = _expression;
+
+    // Import the module list
     tree.import_module_list(fileName);
+
+    // Create a tree from the given expression
     tree.create_tree(expression);
 }
 
@@ -42,8 +59,13 @@ const std::string NPE::get_NPE(void)
 
 void NPE::set_NPE(std::string _expression)
 {
+    // Delete the tree in order to create a new one
     tree.delete_tree();
+
+    // Update the expression
     expression = _expression;
+
+    // Create a tree from the new expression
     tree.create_tree(expression);
 }
 

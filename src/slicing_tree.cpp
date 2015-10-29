@@ -324,6 +324,7 @@ dimension_list slicing_tree::delete_maximums(dimension_list list)
 
 std::string slicing_tree::get_module_names()
 {
+    // Return a string of the module names
     std::string ret;
     for(unsigned int i = 0; i < module_list.size(); ++i)
     {
@@ -334,17 +335,27 @@ std::string slicing_tree::get_module_names()
 
 void slicing_tree::delete_tree(node* current_node)
 {
+    // If current_node is null go back up the recursion ladder
     if(current_node == 0)
     {
         return;
     }
-    if(current_node->get_name() != "V" || current_node->get_name() != "H")
+
+    // If the current_node is an operator then delete the node and go back up
+    // the recursion ladder
+    if(current_node->get_name() != "V" && current_node->get_name() != "H")
     {
         delete current_node;
         return;
     }
+    
+    // Go down the right subtree
     delete_tree(current_node->get_right());
+    
+    // Go down the left subtree
     delete_tree(current_node->get_left());
+
+    // Delete the current node
     delete current_node;
 }
 
